@@ -1,0 +1,38 @@
+name: Cypress E2E
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cypress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Instalar dependencias exactas
+        run: npm ci
+      - name: Revisar TypeScript
+        run: npm run typecheck
+      - name: Probar API y persistencia
+        run: npm run test:api
+      - name: Ejecutar los tres recorridos con Chrome
+        run: npm run test:e2e
+      - name: Conservar evidencia de Cypress, incluso si falla
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencia-cypress-${{ github.run_number }}
+          path: |
+            cypress/screenshots/
+            cypress/videos/
+          if-no-files-found: warn
+          retention-days: 14

@@ -1,0 +1,12 @@
+node_modules/
+data/
+cypress/screenshots/
+cypress/videos/
+test-results/
+*.log
+.env
+.env.local
+entrega/
+*.mp4
+*.pdf
+guion*
